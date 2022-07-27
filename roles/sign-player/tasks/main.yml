@@ -1,0 +1,65 @@
+- name: Ensure package requirements are met
+  become: yes
+  block:
+    - name: Ensure signing key for Google Chrome PPA is up to date
+      ansible.builtin.get_url:
+        url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+        dest: /etc/apt/trusted.gpg.d/google_linux_signing_key.pub
+    
+    - name: Ensure Google Chrome PPA is present
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/etc/apt/trusted.gpg.d/google_linux_signing_key.pub] http://dl.google.com/linux/chrome/deb/ stable main
+
+    - name: Update apt repositories
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Ensure X11 is installed
+      ansible.builtin.apt:
+        name: xorg
+        state: present
+
+    - name: Ensure xinit is installed
+      ansible.builtin.apt:
+        name: xinit
+        state: present
+
+    - name: Ensure Google Chrome is installed
+      ansible.builtin.apt:
+        name: google-chrome-stable
+        state: present
+
+- name: System configuration
+  become: yes
+  block:
+    - name: Ensure signage system user exists
+      ansible.builtin.user:
+        name: "{{ signage_user }}"
+        comment: User for ansible-digital-signage
+    
+    - name: Install systemd units for signage display
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: 0664
+      loop:
+        - { src: "files/signage-startx.service.j2", dest: "/etc/systemd/system/signage-startx.service" }
+        - { src: "files/signage-chrome.service.j2", dest: "/etc/systemd/system/signage-chrome.service" }
+
+    - name: Install systemd units to automatically reload the displayed page
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "0644"
+      when: reload
+      loop:
+        - { src: "files/signage-autoreload.service.j2", dest: "/etc/systemd/system/signage-autoreload.service" }
+        - { src: "files/signage-autoreload.timer.j2", dest: "/etc/systemd/system/signage-autoreload.timer" }
+
+    - name: Force systemd to reread configs
+      ansible.builtin.systemd:
+        daemon_reload: yes

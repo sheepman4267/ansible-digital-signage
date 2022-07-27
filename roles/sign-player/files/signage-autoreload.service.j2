@@ -1,0 +1,19 @@
+# This unit was created by ansible-digital-signage. Any modifications will be lost next time the playbook is run.
+# More information can be found at https://github.com/sheepman4267/ansible-digital-signage
+
+[Unit]
+Description=Reload displayed webpage for ansible-digital-signage
+After=graphical.target systemd-user-sessions.service signage-startx.service
+Type=oneshot
+
+[Service]
+User={{ signage_user }}
+WorkingDirectory=~
+
+PAMName=login
+
+Environment=DISPLAY=:0
+
+StandardOutput=journal
+ExecStart=/usr/bin/xdotool key ctrl+r
+Restart=no

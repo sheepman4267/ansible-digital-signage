@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer to reload displayed webpage for ansible-digital-signage
+
+[Timer]
+OnBootSec={{ reload_every }}
+OnUnitActiveSec={{ reload_every }}
+Unit=signage-autoreload.service
+
+[Install]
+WantedBy=timers.target

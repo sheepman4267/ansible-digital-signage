@@ -1,0 +1,8 @@
+# Reload the page periodically?
+reload: True
+
+# Reload the page every 5 minutes
+reload_every: "5min"
+
+# User to run signage as
+signage_user: "signage"

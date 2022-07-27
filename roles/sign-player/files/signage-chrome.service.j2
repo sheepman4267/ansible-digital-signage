@@ -1,0 +1,18 @@
+# This unit was created by ansible-digital-signage. Any modifications will be lost next time the playbook is run.
+# More information can be found at https://github.com/sheepman4267/ansible-digital-signage
+
+[Unit]
+Description=Start Google Chrome in Kiosk mode for ansible-digital-signage
+After=graphical.target systemd-user-sessions.service signage-startx.service
+
+[Service]
+User={{ signage_user }}
+WorkingDirectory=~
+
+PAMName=login
+
+Environment=DISPLAY=:0
+
+StandardOutput=journal
+ExecStart=/usr/bin/google-chrome-stable --kiosk {{ url }}
+Restart=no
