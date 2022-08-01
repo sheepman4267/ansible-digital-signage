@@ -1,0 +1,34 @@
+<style>
+    body {
+        background-color: #b6b6b6;
+        text-align: center;
+        justify-content: center;
+        display: flex;
+    }
+    div {
+        margin-top: 20vh;
+        min-width: 30%;
+        max-height: 30vh;
+        background-color: #d6d6d6;
+        border: 2px solid;
+        border-radius: 10px;
+        box-shadow: 0px 0px 3px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    hr {
+        width: 80%;
+        border: 1px solid;
+    }
+</style>
+<body>
+    <div>
+        <h2>No Content Scheduled</h2>
+        <hr>
+        This message means that ansible-digital-signage was able to start services,
+        but unable to find any content to display right now. <br><br>
+        Either your schedule is incorrect, or you have enabled display on reboot mode
+        without defining a default URL.
+    </div>
+</body>
+

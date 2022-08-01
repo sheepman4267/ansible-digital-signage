@@ -6,3 +6,15 @@ reload_every: "5min"
 
 # User to run signage as
 signage_user: "signage"
+
+# Schedule file location
+signage_schedule_location: "/var/ansible-digital-signage/signage_schedule"
+
+# Timezone
+signage_timezone: "America/Indianapolis"
+
+# Display the current sign on reboot?
+signage_display_on_reboot: True
+
+# File to deploy as a placeholder
+signage_placeholder: "files/signage-placeholder.html"

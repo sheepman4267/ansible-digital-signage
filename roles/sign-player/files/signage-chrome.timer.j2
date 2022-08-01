@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer to start Chrome and enable display output for ansible-digital-signage
+
+[Timer]
+{% for line in signage_schedule %}
+OnCalendar={{ line.days }} *-*-* {{ line.start_time }}
+{% endfor %}
+Unit=signage-chrome.service
+
+[Install]
+WantedBy=timers.target

@@ -14,5 +14,7 @@ PAMName=login
 Environment=DISPLAY=:0
 
 StandardOutput=journal
-ExecStart=/usr/bin/google-chrome-stable --kiosk {{ url }}
+ExecStartPre=/usr/bin/xrandr --output {{ display_connection }} --auto
+ExecStart=bash -c "/usr/bin/google-chrome-stable --kiosk $(python3 /opt/ansible-digital-signage/find-url-from-schedule.py)"
+ExecStopPost=/usr/bin/xrandr --output {{ display_connection }} --off
 Restart=no

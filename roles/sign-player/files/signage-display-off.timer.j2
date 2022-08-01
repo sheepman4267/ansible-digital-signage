@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer to stop Chrome and disable display output for ansible-digital-signage
+
+[Timer]
+{% for line in signage_schedule %}
+OnCalendar={{ line.days }} *-*-* {{ line.end_time }}
+{% endfor %}
+Unit=signage-display-off.service
+
+[Install]
+WantedBy=timers.target

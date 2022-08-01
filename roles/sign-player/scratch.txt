@@ -1,0 +1,3 @@
+timer for "turn on" with multiple oncalendar entries
+make chrome service grab current url from file
+timer for "turn off" with multiple oncalendar entries

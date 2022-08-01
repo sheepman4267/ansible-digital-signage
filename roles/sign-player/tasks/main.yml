@@ -14,24 +14,56 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Ensure X11 is installed
+    - name: Ensure required packaged are installed
       ansible.builtin.apt:
-        name: xorg
+        name: "{{ item }}"
         state: present
-
-    - name: Ensure xinit is installed
-      ansible.builtin.apt:
-        name: xinit
-        state: present
-
-    - name: Ensure Google Chrome is installed
-      ansible.builtin.apt:
-        name: google-chrome-stable
-        state: present
+      loop:
+        - xorg
+        - xinit
+        - google-chrome-stable
+        - xdotool
+        - x11-xserver-utils
+        - python3
 
 - name: System configuration
   become: yes
   block:
+    - name: Set Timezone according to configuration
+      community.general.timezone:
+        name: "{{ signage_timezone }}"
+
+    - name: Create signage directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+      loop:
+        - "/var/ansible-digital-signage"
+        - "/opt/ansible-digital-signage"
+
+    - name: Write schedule file
+      ansible.builtin.template:
+        src: "files/signage-schedule.j2"
+        dest: "/var/ansible-digital-signage/signage-schedule"
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+        mode: 0664
+
+    - name: Install script to read schedule file
+      ansible.builtin.copy:
+        src: "files/find-url-from-schedule.py"
+        dest: "/opt/ansible-digital-signage/find-url-from-schedule.py"
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+    
+    - name: Install default/placeholder HTML file
+      ansible.builtin.copy:
+        src: "{{ signage_placeholder }}"
+        dest: "/opt/ansible-digital-signage/signage-placeholder.html"
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+      
     - name: Ensure signage system user exists
       ansible.builtin.user:
         name: "{{ signage_user }}"
@@ -47,6 +79,9 @@
       loop:
         - { src: "files/signage-startx.service.j2", dest: "/etc/systemd/system/signage-startx.service" }
         - { src: "files/signage-chrome.service.j2", dest: "/etc/systemd/system/signage-chrome.service" }
+        - { src: "files/signage-chrome.timer.j2", dest: "/etc/systemd/system/signage-chrome.timer" }
+        - { src: "files/signage-display-off.service.j2", dest: "/etc/systemd/system/signage-display-off.service" }
+        - { src: "files/signage-display-off.timer.j2", dest: "/etc/systemd/system/signage-display-off.service" }
 
     - name: Install systemd units to automatically reload the displayed page
       ansible.builtin.template:
@@ -63,3 +98,29 @@
     - name: Force systemd to reread configs
       ansible.builtin.systemd:
         daemon_reload: yes
+
+- name: Enable and start systemd units
+  become: yes
+  block:
+    - name: Enable and start X11 Display Server
+      ansible.builtin.systemd:
+        name: signage-startx
+        enabled: yes
+    
+    - name: Enable and start Google Chrome
+      ansible.builtin.systemd:
+        name: signage-chrome
+        state: restarted
+        enabled: yes
+    
+    - name: Enable and start autoreload units
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - signage-autoreload.service
+        - signage-autoreload.timer
+        - signage-display-off.timer
+        - signage-chrome.timer
+      when: reload

@@ -2,18 +2,9 @@
 # More information can be found at https://github.com/sheepman4267/ansible-digital-signage
 
 [Unit]
-Description=Reload displayed webpage for ansible-digital-signage
+Description=Stop signage-chrome
 After=graphical.target systemd-user-sessions.service signage-startx.service
 Type=oneshot
 
 [Service]
-User={{ signage_user }}
-WorkingDirectory=~
-
-PAMName=login
-
-Environment=DISPLAY=:0
-
-StandardOutput=journal
-ExecStart=/usr/bin/xrandr --output {{ display_connection }} --off
-Restart=no
+ExecStart=systemctl stop signage-chrome.service
