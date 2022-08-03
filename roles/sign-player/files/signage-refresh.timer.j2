@@ -1,5 +1,8 @@
+# This unit was created by ansible-digital-signage. Any modifications will be lost next time the playbook is run.
+# More information can be found at https://github.com/sheepman4267/ansible-digital-signage
+
 [Unit]
-Description=Timer to stop Chrome and disable display output for ansible-digital-signage
+Description=Timer to check signage schedule and decide whether to restart chrome or turn off the display
 
 [Timer]
 {% for line in signage_schedule %}

@@ -2,8 +2,8 @@
 # More information can be found at https://github.com/sheepman4267/ansible-digital-signage
 
 [Unit]
-Description=Stop signage-chrome
-After=graphical.target systemd-user-sessions.service signage-startx.service
+Description=Check signage schedule and decide whether to restart chrome or turn off the display
+After=graphical.target systemd-user-sessions.service signage-startx.service signage-chrome.service
 Type=oneshot
 
 [Service]
