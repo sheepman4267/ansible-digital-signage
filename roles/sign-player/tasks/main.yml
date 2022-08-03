@@ -87,8 +87,10 @@
       loop:
         - { src: "files/signage-startx.service.j2", dest: "/etc/systemd/system/signage-startx.service" }
         - { src: "files/signage-chrome.service.j2", dest: "/etc/systemd/system/signage-chrome.service" }
+        - { src: "files/signage-chrome.timer.j2", dest: "/etc/systemd/system/signage-chrome.timer" }
         - { src: "files/signage-refresh.service.j2", dest: "/etc/systemd/system/signage-refresh.service" }
         - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
+        - { src: "files/signage-placeholder-on-boot.service.j2", dest: "/etc/systemd/system/signage-placeholder-on-boot.service" }
 
     - name: Install systemd units to automatically reload the displayed page
       ansible.builtin.template:
@@ -112,12 +114,6 @@
     - name: Enable and start X11 Display Server
       ansible.builtin.systemd:
         name: signage-startx
-        enabled: yes
-    
-    - name: Enable and start Google Chrome
-      ansible.builtin.systemd:
-        name: signage-chrome
-        state: restarted
         enabled: yes
     
     - name: Enable and start autoreload units

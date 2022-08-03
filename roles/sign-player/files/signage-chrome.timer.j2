@@ -1,10 +1,12 @@
+# This unit was created by ansible-digital-signage. Any modifications will be lost next time the playbook is run.
+# More information can be found at https://github.com/sheepman4267/ansible-digital-signage
+
 [Unit]
-Description=Timer to start Chrome and enable display output for ansible-digital-signage
+Description=Timer to start Chrome on boot
 
 [Timer]
-{% for line in signage_schedule %}
-OnCalendar={{ line.days }} *-*-* {{ line.start_time }}
-{% endfor %}
+OnBootSec=30s
+
 Unit=signage-chrome.service
 
 [Install]

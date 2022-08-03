@@ -2,12 +2,9 @@
 # More information can be found at https://github.com/sheepman4267/ansible-digital-signage
 
 [Unit]
-Description=Timer to reload displayed webpage for ansible-digital-signage
+Description=Set current page to placeholder on boot
+Type=oneshot
 
-[Timer]
-OnBootSec={{ reload_every }}
-OnUnitActiveSec={{ reload_every }}
-Unit=signage-autoreload.service
-
-[Install]
-WantedBy=timers.target
+[Service]
+ExecStart=/usr/bin/echo "/opt/ansible-digital-signage/signage-placeholder.html" > /var/ansible-digital-signage/current
+Restart=no
