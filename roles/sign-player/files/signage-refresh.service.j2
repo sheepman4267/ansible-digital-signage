@@ -7,4 +7,4 @@ After=graphical.target systemd-user-sessions.service signage-startx.service
 Type=oneshot
 
 [Service]
-ExecStart=systemctl stop signage-chrome.service
+ExecStart=python3 /opt/ansible-digital-signage/find-url-from-schedule.py

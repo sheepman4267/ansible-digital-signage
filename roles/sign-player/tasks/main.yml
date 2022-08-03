@@ -57,6 +57,14 @@
         owner: "{{ signage_user }}"
         group: "{{ signage_user }}"
     
+    - name: Ensure current URL file exists
+      ansible.builtin.file:
+        path: "/var/ansible-digital-signage/current"
+        state: touch
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+        mode: 0755
+    
     - name: Install default/placeholder HTML file
       ansible.builtin.copy:
         src: "{{ signage_placeholder }}"
@@ -79,9 +87,8 @@
       loop:
         - { src: "files/signage-startx.service.j2", dest: "/etc/systemd/system/signage-startx.service" }
         - { src: "files/signage-chrome.service.j2", dest: "/etc/systemd/system/signage-chrome.service" }
-        - { src: "files/signage-chrome.timer.j2", dest: "/etc/systemd/system/signage-chrome.timer" }
-        - { src: "files/signage-display-off.service.j2", dest: "/etc/systemd/system/signage-display-off.service" }
-        - { src: "files/signage-display-off.timer.j2", dest: "/etc/systemd/system/signage-display-off.service" }
+        - { src: "files/signage-refresh.service.j2", dest: "/etc/systemd/system/signage-refresh.service" }
+        - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
 
     - name: Install systemd units to automatically reload the displayed page
       ansible.builtin.template:
@@ -121,6 +128,6 @@
       loop:
         - signage-autoreload.service
         - signage-autoreload.timer
-        - signage-display-off.timer
-        - signage-chrome.timer
+        - signage-refresh.timer
+        - signage-refresh.service
       when: reload

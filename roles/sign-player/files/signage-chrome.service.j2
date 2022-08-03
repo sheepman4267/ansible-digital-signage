@@ -15,6 +15,6 @@ Environment=DISPLAY=:0
 
 StandardOutput=journal
 ExecStartPre=/usr/bin/xrandr --output {{ display_connection }} --auto
-ExecStart=bash -c "/usr/bin/google-chrome-stable --kiosk $(python3 /opt/ansible-digital-signage/find-url-from-schedule.py)"
+ExecStart=bash -c "/usr/bin/google-chrome-stable --kiosk $(cat /var/ansible-digital-signage/current)"
 ExecStopPost=/usr/bin/xrandr --output {{ display_connection }} --off
 Restart=no
