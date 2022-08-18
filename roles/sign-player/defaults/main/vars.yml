@@ -21,3 +21,6 @@ signage_placeholder: "files/signage-placeholder.html"
 
 # File to deploy as on-boot splash screen
 signage_on_boot: "files/signage-on-boot.html"
+
+# Orientation of display output. See --rotate: https://www.x.org/releases/X11R7.5/doc/man/man1/xrandr.1.html
+signage_orientation: normal
