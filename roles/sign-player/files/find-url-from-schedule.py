@@ -23,7 +23,9 @@ with open('/var/ansible-digital-signage/signage-schedule') as schedule_file:
                     current.write(url)
                 subprocess.call('systemctl restart signage-chrome.service', shell=True)
                 exit(0)
-        logging.info(f'Writing path to placeholder to /var/ansible-digital-signage/current and stopping Chrome.')
-        with open('/var/ansible-digital-signage/current', 'w') as current:
-            current.write('/opt/ansible-digital-signage/signage-placeholder.html')
-        subprocess.call('systemctl stop signage-chrome.service', shell=True)
+        else:
+            logging.info(f'Writing path to placeholder to /var/ansible-digital-signage/current and stopping Chrome.')
+            with open('/var/ansible-digital-signage/current', 'w') as current:
+                current.write('/opt/ansible-digital-signage/signage-placeholder.html')
+            subprocess.call('systemctl stop signage-chrome.service', shell=True)
+            subprocess.call('systemctl start signage-display-off.service', shell=True)

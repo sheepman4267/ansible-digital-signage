@@ -2,8 +2,9 @@
 # More information can be found at https://github.com/sheepman4267/ansible-digital-signage
 
 [Unit]
-Description=Start Google Chrome in Kiosk mode for ansible-digital-signage
+Description=Turn off display for ansible-digital-signage
 After=graphical.target systemd-user-sessions.service signage-startx.service
+Type=forking
 
 [Service]
 User={{ signage_user }}
@@ -14,6 +15,5 @@ PAMName=login
 Environment=DISPLAY=:0
 
 StandardOutput=journal
-ExecStartPre=/usr/bin/xrandr --output {{ display_connection }} --rotate {{ signage_orientation }} --auto
-ExecStart=bash -c "{{ signage_browser_command }} $(cat /var/ansible-digital-signage/current) && sleep 2 && /usr/bin/xdotool getwindowfocus windowmove 0 0 windowsize 100% 100%"
+ExecStart=/usr/bin/xrandr --output {{ display_connection }} --off
 Restart=no

@@ -24,3 +24,9 @@ signage_on_boot: "files/signage-on-boot.html"
 
 # Orientation of display output. See --rotate: https://www.x.org/releases/X11R7.5/doc/man/man1/xrandr.1.html
 signage_orientation: normal
+
+# Name of browser package to use
+signage_browser: "google-chrome-stable"
+
+# Browser command. Change this for platforms where Chrome doesn't work.
+signage_browser_command: "/usr/bin/google-chrome-stable --kiosk"
