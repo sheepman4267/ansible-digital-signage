@@ -14,17 +14,22 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Ensure required packaged are installed
+    - name: Ensure required packages are installed
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
       loop:
         - xorg
         - xinit
-        - google-chrome-stable
         - xdotool
         - x11-xserver-utils
         - python3
+
+    - name: Ensure Browser is installed
+      ansible.builtin.apt:
+        name:
+          - "{{ signage_browser }}"
+        state: present
 
 - name: System configuration
   become: yes
