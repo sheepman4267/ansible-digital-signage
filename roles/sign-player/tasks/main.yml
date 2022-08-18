@@ -34,6 +34,11 @@
 - name: System configuration
   become: yes
   block:
+    - name: Ensure signage system user exists
+      ansible.builtin.user:
+        name: "{{ signage_user }}"
+        comment: User for ansible-digital-signage
+
     - name: Set Timezone according to configuration
       community.general.timezone:
         name: "{{ signage_timezone }}"
@@ -76,11 +81,6 @@
         dest: "/opt/ansible-digital-signage/signage-placeholder.html"
         owner: "{{ signage_user }}"
         group: "{{ signage_user }}"
-      
-    - name: Ensure signage system user exists
-      ansible.builtin.user:
-        name: "{{ signage_user }}"
-        comment: User for ansible-digital-signage
     
     - name: Install systemd units for signage display
       ansible.builtin.template:
