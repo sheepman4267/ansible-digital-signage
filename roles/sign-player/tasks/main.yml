@@ -1,5 +1,6 @@
-- name: Ensure package requirements are met
+- name: Debian-based distro - Ensure package requirements are met
   become: yes
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
   block:
     - name: Ensure signing key for Google Chrome PPA is up to date
       ansible.builtin.get_url:
@@ -27,6 +28,27 @@
 
     - name: Ensure Browser is installed
       ansible.builtin.apt:
+        name:
+          - "{{ signage_browser }}"
+        state: present
+
+- name: RedHat-based distro - Ensure package requirements are met
+  become: yes
+  when: ansible_distribution == 'Fedora'
+  block:
+    - name: Ensure required packages are installed
+      ansible.builtin.dnf:
+        name:
+          - xorg-x11-server-Xorg
+          - xorg-x11-xinit
+          - xdotool
+          - xrandr
+          #- x11-xserver-utils
+          - python3
+        state: present
+
+    - name: Ensure Browser is installed
+      ansible.builtin.dnf:
         name:
           - "{{ signage_browser }}"
         state: present
