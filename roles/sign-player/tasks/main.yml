@@ -157,3 +157,20 @@
         - signage-refresh.timer
         - signage-refresh.service
       when: reload
+
+- name: Install bash script to dismiss Chrome's first run dialog
+  ansible.builtin.copy:
+    src: files/chrome-firstrun-workaround.sh
+    dest: /opt/ansible-digital-signage/chrome-firstrun-workaround.sh
+    owner: "{{ signage_user }}"
+    group: "{{ signage_user }}"
+  when: "signage_browser_package == 'google-chrome-stable'"
+  become: yes
+
+- name: Dismiss Chrome's first run dialog
+  ansible.builtin.command:
+    cmd: "sudo -u {{ signage_user }} bash /opt/ansible-digital-signage/chrome-firstrun-workaround.sh"
+    creates: "/home/{{ signage_user }}/chrome-has-been-run"
+  become: yes
+  when: "signage_browser_package == 'google-chrome-stable'"
+        
