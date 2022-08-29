@@ -10,6 +10,7 @@
     - name: Ensure Google Chrome PPA is present
       ansible.builtin.apt_repository:
         repo: deb [signed-by=/etc/apt/trusted.gpg.d/google_linux_signing_key.pub] http://dl.google.com/linux/chrome/deb/ stable main
+        filename: google-chrome
 
     - name: Update apt repositories
       ansible.builtin.apt:
