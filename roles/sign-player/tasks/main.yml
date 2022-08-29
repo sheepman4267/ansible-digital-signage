@@ -29,7 +29,7 @@
     - name: Ensure Browser is installed
       ansible.builtin.apt:
         name:
-          - "{{ signage_browser }}"
+          - "{{ signage_browser_package }}"
         state: present
 
 - name: RedHat-based distro - Ensure package requirements are met

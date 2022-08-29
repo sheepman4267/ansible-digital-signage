@@ -26,7 +26,7 @@ signage_on_boot: "files/signage-on-boot.html"
 signage_orientation: normal
 
 # Name of browser package to use
-signage_browser: "google-chrome-stable"
+signage_browser_package: "google-chrome-stable"
 
 # Browser command. Change this for platforms where Chrome doesn't work.
 signage_browser_command: "/usr/bin/google-chrome-stable --kiosk"
