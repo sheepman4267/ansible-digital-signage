@@ -1,16 +1,19 @@
 - name: Debian-based distro - Ensure package requirements are met
   become: yes
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+  tags: setup
   block:
     - name: Ensure signing key for Google Chrome PPA is up to date
       ansible.builtin.get_url:
         url: https://dl-ssl.google.com/linux/linux_signing_key.pub
         dest: /etc/apt/trusted.gpg.d/google_linux_signing_key.pub
+      when: "signage_browser_package == 'google-chrome-stable'"
     
     - name: Ensure Google Chrome PPA is present
       ansible.builtin.apt_repository:
         repo: deb [signed-by=/etc/apt/trusted.gpg.d/google_linux_signing_key.pub] http://dl.google.com/linux/chrome/deb/ stable main
         filename: google-chrome
+      when: "signage_browser_package == 'google-chrome-stable'"
 
     - name: Update apt repositories
       ansible.builtin.apt:
@@ -36,6 +39,7 @@
 - name: RedHat-based distro - Ensure package requirements are met
   become: yes
   when: ansible_distribution == 'Fedora'
+  tags: setup
   block:
     - name: Ensure required packages are installed
       ansible.builtin.dnf:
@@ -56,6 +60,7 @@
 
 - name: System configuration
   become: yes
+  tags: setup 
   block:
     - name: Ensure signage system user exists
       ansible.builtin.user:
@@ -74,22 +79,7 @@
       loop:
         - "/var/ansible-digital-signage"
         - "/opt/ansible-digital-signage"
-
-    - name: Write schedule file
-      ansible.builtin.template:
-        src: "files/signage-schedule.j2"
-        dest: "/var/ansible-digital-signage/signage-schedule"
-        owner: "{{ signage_user }}"
-        group: "{{ signage_user }}"
-        mode: 0664
-
-    - name: Install script to read schedule file
-      ansible.builtin.copy:
-        src: "files/find-url-from-schedule.py"
-        dest: "/opt/ansible-digital-signage/find-url-from-schedule.py"
-        owner: "{{ signage_user }}"
-        group: "{{ signage_user }}"
-    
+ 
     - name: Ensure current URL file exists
       ansible.builtin.file:
         path: "/var/ansible-digital-signage/current"
@@ -118,33 +108,23 @@
         - { src: "files/signage-chrome.timer.j2", dest: "/etc/systemd/system/signage-chrome.timer" }
         - { src: "files/signage-display-off.service.j2", dest: "/etc/systemd/system/signage-display-off.service" }
         - { src: "files/signage-refresh.service.j2", dest: "/etc/systemd/system/signage-refresh.service" }
-        - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
         - { src: "files/signage-placeholder-on-boot.service.j2", dest: "/etc/systemd/system/signage-placeholder-on-boot.service" }
-
-    - name: Install systemd units to automatically reload the displayed page
-      ansible.builtin.template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: root
-        group: root
-        mode: "0644"
-      when: reload
-      loop:
         - { src: "files/signage-autoreload.service.j2", dest: "/etc/systemd/system/signage-autoreload.service" }
         - { src: "files/signage-autoreload.timer.j2", dest: "/etc/systemd/system/signage-autoreload.timer" }
+        - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
 
     - name: Force systemd to reread configs
       ansible.builtin.systemd:
         daemon_reload: yes
 
-- name: Enable and start systemd units
-  become: yes
-  block:
-    - name: Enable and start X11 Display Server
+    - name: Enable main Signage SystemD Units
       ansible.builtin.systemd:
-        name: signage-startx
-        state: started
+        name: "{{ item }}"
         enabled: yes
+      loop:
+        - signage-startx.service
+        - signage-refresh.timer
+        - signage-refresh.service
 
     - name: Enable and start autoreload units
       ansible.builtin.systemd:
@@ -152,25 +132,99 @@
         state: started
         enabled: yes
       loop:
-        - signage-autoreload.service
         - signage-autoreload.timer
-        - signage-refresh.timer
-        - signage-refresh.service
+        - signage-autoreload.service
       when: reload
 
-- name: Install bash script to dismiss Chrome's first run dialog
-  ansible.builtin.copy:
-    src: files/chrome-firstrun-workaround.sh
-    dest: /opt/ansible-digital-signage/chrome-firstrun-workaround.sh
-    owner: "{{ signage_user }}"
-    group: "{{ signage_user }}"
+- name: Deal with Chrome on first run
   when: "signage_browser_package == 'google-chrome-stable'"
-  become: yes
+  tags: setup
+  block:
+  - name: Install bash script to dismiss Chrome's first run dialog
+    ansible.builtin.copy:
+      src: files/chrome-firstrun-workaround.sh
+      dest: /opt/ansible-digital-signage/chrome-firstrun-workaround.sh
+      owner: "{{ signage_user }}"
+      group: "{{ signage_user }}"
+    become: yes
+  
+  - name: Start X11
+    become: yes
+    ansible.builtin.systemd:
+      name: signage-startx.service
+      state: started
+  
+  - name: Wait for X11...
+    ansible.builtin.pause:
+      seconds: 5
+  
+  - name: Start Chrome
+    become: yes
+    ansible.builtin.systemd:
+      name: signage-chrome.service
+      state: started
+  
+  - name: Wait for Chrome...
+    ansible.builtin.pause:
+      seconds: 10
 
-- name: Dismiss Chrome's first run dialog
-  ansible.builtin.command:
-    cmd: "sudo -u {{ signage_user }} bash /opt/ansible-digital-signage/chrome-firstrun-workaround.sh"
-    creates: "/home/{{ signage_user }}/chrome-has-been-run"
+  - name: Dismiss Chrome's first run dialog
+    ansible.builtin.command:
+      cmd: "sudo -u {{ signage_user }} bash /opt/ansible-digital-signage/chrome-firstrun-workaround.sh"
+      creates: "/home/{{ signage_user }}/chrome-has-been-run"
+    become: yes
+
+  - name: Wait for Chrome...
+    ansible.builtin.pause:
+      seconds: 10
+      
+  - name: Stop Chrome
+    become: yes
+    ansible.builtin.systemd:
+      name: signage-chrome.service
+      state: stopped
+
+- name: Handle Schedule
+  tags: update-schedule
   become: yes
-  when: "signage_browser_package == 'google-chrome-stable'"
-        
+  block:
+    - name: Write schedule file
+      ansible.builtin.template:
+        src: "files/signage-schedule.j2"
+        dest: "/var/ansible-digital-signage/signage-schedule"
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+        mode: 0664
+
+    - name: Install script to read schedule file
+      ansible.builtin.copy:
+        src: "files/find-url-from-schedule.py"
+        dest: "/opt/ansible-digital-signage/find-url-from-schedule.py"
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+    
+    - name: Install/update timers
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: 0664
+      loop:
+        - { src: "files/signage-autoreload.timer.j2", dest: "/etc/systemd/system/signage-autoreload.timer" }
+        - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
+
+- name: Polish the installation
+  become: yes
+  tags: update-schedule
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - signage-refresh.service
+    - signage-refresh.timer
+
+
+    
+
