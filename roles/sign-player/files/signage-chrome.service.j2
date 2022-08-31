@@ -15,5 +15,6 @@ Environment=DISPLAY=:0
 
 StandardOutput=journal
 ExecStartPre=/usr/bin/xrandr --output {{ display_connection }} --rotate {{ signage_orientation }} --auto
-ExecStart=bash -c "{{ signage_browser_command }} $(cat /var/ansible-digital-signage/current) && sleep 2 && /usr/bin/xdotool getwindowfocus windowmove 0 0 windowsize 100% 100%"
+ExecStart=bash -c "{{ signage_browser_command }} $(cat /var/ansible-digital-signage/current)"
+ExecStartPost=bash -c "sleep 2 && /usr/bin/xdotool getwindowfocus windowmove 0 0 windowsize 100% 100%"
 Restart=no
