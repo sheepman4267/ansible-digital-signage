@@ -80,13 +80,16 @@
         - "/var/ansible-digital-signage"
         - "/opt/ansible-digital-signage"
  
-    - name: Ensure current URL file exists
+    - name: Ensure signage cache files exist
       ansible.builtin.file:
-        path: "/var/ansible-digital-signage/current"
+        path: "{{ item }}"
         state: touch
         owner: "{{ signage_user }}"
         group: "{{ signage_user }}"
         mode: 0755
+      loop:
+        - /var/ansible-digital-signage/current
+        - /var/ansible-digital-signage/display-output
     
     - name: Install default/placeholder HTML file
       ansible.builtin.copy:
@@ -197,12 +200,15 @@
         group: "{{ signage_user }}"
         mode: 0664
 
-    - name: Install script to read schedule file
+    - name: Install Python scripts
       ansible.builtin.copy:
-        src: "files/find-url-from-schedule.py"
-        dest: "/opt/ansible-digital-signage/find-url-from-schedule.py"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
         owner: "{{ signage_user }}"
         group: "{{ signage_user }}"
+      loop:
+        - { src: "files/find-url-from-schedule.py", dest: "/opt/ansible-digital-signage/find-url-from-schedule.py" }
+        - { src: "files/detect-primary-display.py", dest: "/opt/ansible-digital-signage/detect-primary-display.py" }
     
     - name: Install/update timers
       ansible.builtin.template:
