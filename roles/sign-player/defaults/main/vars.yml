@@ -32,4 +32,4 @@ signage_browser_package: "google-chrome-stable"
 signage_browser_command: "/usr/bin/google-chrome-stable --kiosk"
 
 # Command to start the X11 server. This is a hack and will hopefully not be required long term.
-signage_startx_command: "/usr/bin/startx -- vt8 -keeptty -verbose 3 -logfile /dev/null"
+signage_startx_command: "xinit -- vt8 -keeptty"
