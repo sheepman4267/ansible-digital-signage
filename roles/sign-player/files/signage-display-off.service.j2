@@ -15,5 +15,5 @@ PAMName=login
 Environment=DISPLAY=:0
 
 StandardOutput=journal
-ExecStart=bash -c "/usr/bin/xrandr --output $(cat /var/ansible-digital-signage/display-connection) --off"
+ExecStart=bash -c "/usr/bin/xrandr --output $(cat /var/ansible-digital-signage/display-output) --off"
 Restart=no
