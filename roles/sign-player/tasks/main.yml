@@ -144,6 +144,16 @@
         - signage-autoreload.timer
         - signage-autoreload.service
       when: reload
+      
+    - name: Install Python scripts
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ signage_user }}"
+        group: "{{ signage_user }}"
+      loop:
+        - { src: "files/find-url-from-schedule.py", dest: "/opt/ansible-digital-signage/find-url-from-schedule.py" }
+        - { src: "files/detect-primary-display.py", dest: "/opt/ansible-digital-signage/detect-primary-display.py" }
 
 - name: Deal with Chrome on first run
   when: "signage_browser_package == 'google-chrome-stable'"
@@ -204,16 +214,6 @@
         owner: "{{ signage_user }}"
         group: "{{ signage_user }}"
         mode: 0664
-
-    - name: Install Python scripts
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: "{{ signage_user }}"
-        group: "{{ signage_user }}"
-      loop:
-        - { src: "files/find-url-from-schedule.py", dest: "/opt/ansible-digital-signage/find-url-from-schedule.py" }
-        - { src: "files/detect-primary-display.py", dest: "/opt/ansible-digital-signage/detect-primary-display.py" }
     
     - name: Install/update timers
       ansible.builtin.template:
