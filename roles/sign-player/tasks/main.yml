@@ -182,6 +182,16 @@
         - { src: "files/find-url-from-schedule.py", dest: "/opt/ansible-digital-signage/find-url-from-schedule.py" }
         - { src: "files/detect-primary-display.py", dest: "/opt/ansible-digital-signage/detect-primary-display.py" }
 
+- name: Start X11
+  become: yes
+  ansible.builtin.systemd:
+    name: signage-startx.service
+    state: started
+
+- name: Wait for X11...
+  ansible.builtin.pause:
+    seconds: 5
+
 - name: Deal with Chrome on first run
   when: ("signage_browser_package == 'google-chrome-stable'") or ("signage_browser_package == 'chromium-browser'")
   tags: setup
@@ -193,16 +203,6 @@
       owner: "{{ signage_user }}"
       group: "{{ signage_user }}"
     become: yes
-  
-  - name: Start X11
-    become: yes
-    ansible.builtin.systemd:
-      name: signage-startx.service
-      state: started
-  
-  - name: Wait for X11...
-    ansible.builtin.pause:
-      seconds: 5
   
   - name: Start Chrome
     become: yes
@@ -253,16 +253,16 @@
         - { src: "files/signage-autoreload.timer.j2", dest: "/etc/systemd/system/signage-autoreload.timer" }
         - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
 
-- name: Polish the installation
-  become: yes
-  tags: update-schedule
-  ansible.builtin.systemd:
-    name: "{{ item }}"
-    enabled: true
-    state: started
-  loop:
-    - signage-refresh.service
-    - signage-refresh.timer
+    - name: Polish the installation
+      become: yes
+      tags: update-schedule
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - signage-refresh.service
+        - signage-refresh.timer
 
 
     
