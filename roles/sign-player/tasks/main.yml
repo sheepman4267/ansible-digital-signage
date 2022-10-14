@@ -1,3 +1,30 @@
+- name: Set configuration facts
+  when: signage_browser != 'custom'
+  block:
+    - name: Set facts for Ubuntu/Debian
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+      block:
+      - name: Set facts for Chrome
+        when: signage_browser == 'chrome'
+        ansible.builtin.set_fact:
+          signage_browser_package: "google-chrome-stable"
+          signage_browser_window_name: "chrome"
+          signage_browser_command: "/usr/bin/google-chrome-stable --kiosk"
+      
+      - name: Set facts for Chromium
+        when: signage_browser == 'chromium'
+        ansible.builtin.set_fact:
+          signage_browser_package: "chromium-browser"
+          signage_browser_window_name: "chromium"
+          signage_browser_command: "/usr/bin/chromium-browser --kiosk"
+
+      - name: Set facts for Firefox
+        when: signage_browser == 'firefox'
+        ansible.builtin.set_fact:
+          signage_browser_package: "firefox"
+          signage_browser_window_name: "firefox"
+          signage_browser_command: "MOZ_USE_XINPUT2=1 /usr/bin/firefox -kiosk"
+
 - name: Debian-based distro - Ensure package requirements are met
   become: yes
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
