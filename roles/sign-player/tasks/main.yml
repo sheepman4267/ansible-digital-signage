@@ -179,7 +179,7 @@
         owner: "{{ signage_user }}"
         group: "{{ signage_user }}"
       loop:
-        - { src: "files/find-url-from-schedule.py", dest: "/opt/ansible-digital-signage/find-url-from-schedule.py" }
+        - { src: "files/signage-refresh.py", dest: "/opt/ansible-digital-signage/signage-refresh.py" }
         - { src: "files/detect-primary-display.py", dest: "/opt/ansible-digital-signage/detect-primary-display.py" }
 
 - name: Start X11
