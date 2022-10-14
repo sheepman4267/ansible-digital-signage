@@ -156,7 +156,7 @@
         - { src: "files/detect-primary-display.py", dest: "/opt/ansible-digital-signage/detect-primary-display.py" }
 
 - name: Deal with Chrome on first run
-  when: "signage_browser_package == 'google-chrome-stable'"
+  when: ("signage_browser_package == 'google-chrome-stable'") or ("signage_browser_package == 'chromium-browser'")
   tags: setup
   block:
   - name: Install bash script to dismiss Chrome's first run dialog
