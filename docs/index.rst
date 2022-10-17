@@ -25,6 +25,6 @@ Here's the simple version of what the Ansible role does:
 #. Writes a schedule file to allow the system to decide what to display and when
 #. Installs a python script to read that schedule file and take action (this script does not stay running)
 
-This system is based entirely on the premise that it is better to let someone else write the long-running code. This frees me entirely from having to worry about such things as memory leaks, and greatly reduces the chance of finding some edge-case crash that take 3 weeks to occur. 
+This system is based entirely on the premise that it is better to let someone else write the long-running code. This frees me entirely from having to worry about such things as memory leaks, and greatly reduces the chance of finding some edge-case crash that takes 3 weeks to occur. 
 
 Enough of a simple digital signage system existed on every (systemd-based) Linux system already that all I had to do was configure it right. Hence, Ansible!
