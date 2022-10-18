@@ -48,8 +48,6 @@ signage_reload_every
 --------------------
 Sets the interval between automatic reloads. Has no effect if :ref:`signage_reload` is False.
 
-.. _my-reference-label:
-
 ----------------
 signage_schedule
 ----------------
@@ -79,7 +77,7 @@ String. Sets the command which the role will use to start the X11 display server
 Default::
 
     signage_startx_command: "xinit -- vt8 -keeptty"
-    
+
 ----------------
 signage_timezone
 ----------------
