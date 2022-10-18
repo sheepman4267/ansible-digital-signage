@@ -1,8 +1,9 @@
 .. toctree:: 
     :maxdepth: 2
 
-    quickstart
-    variables
+    usage/quickstart
+    usage/variables
+    usage/advanced-setups
 
 =======================
 Ansible Digital Signage
