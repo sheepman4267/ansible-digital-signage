@@ -24,11 +24,30 @@ This is fairly standard Ansible setup.
 #. Set your administrative user up for SSH key authentication
 #. Set your administrative user up for passwordless sudo
 
+------------------------
+Install the Ansible role
+------------------------
+This role is not (yet) published on ansible-galaxy. Currently, I have deployed it by cloning the git repository and creating my own :code:`hosts.yml` and :code:`playbook.yml` files. Add those to .gitignore, and then updating the role is as easy as :code:`git pull`. 
+
+#. Clone the repository::
+
+    git clone https://github.com/City-of-Bloomington/ansible-digital-signage.git
+
+#. :code:`cd` into the newly-created :code:`ansible-digital-signage` directory
+#. Run all your :code:`ansible-playbook` commands from here, and the role should be detected and used correctly.
+
 ---------------------------
 Configure Ansible Inventory
 ---------------------------
 #. Copy hosts.yml.example to hosts.yml
 #. Change "ansible_user" to the administrative username you chose when setting up your operating system
 #. Configure signage_schedule to display a page of your choice (example.com is traditional)
+    .. tip:: The example schedule will display whatever you set "url" to from 8:00 AM to 5:00 PM, every day of the week. For more information on configuring the schedule, see :ref:`signage_schedule`.
 #. Add your signage player's hostname or IP address to the "hosts" list
 #. Copy playbook.yml.example to playbook.yml 
+    .. tip:: Unless you changed the ansible group name (default: :code:`signage_players`) in hosts.yml, the example playbook should "just work" without editing anything.
+#. Run the playbook::
+    
+    ansible-playbook -i hosts.yml playbook.yml
+
+Wait a few minutes. The signage player should eventually display xeyes, then chrome, dismiss the chrome first-run popup, and then display whatever you set in the schedule. Once you have that much working, go ahead to :doc:`usage/advanced-setups`
