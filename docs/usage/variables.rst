@@ -3,6 +3,8 @@ Role Variables
 ==============
 ansible-digital-signage is configured entirely through variables set in your ansible inventory. These can be set per group or per host, just like in any other ansible playbook.
 
+.. _my-reference-label:
+
 ----------------
 signage_schedule
 ----------------

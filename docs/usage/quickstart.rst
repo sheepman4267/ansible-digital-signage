@@ -30,7 +30,5 @@ Configure Ansible Inventory
 #. Copy hosts.yml.example to hosts.yml
 #. Change "ansible_user" to the administrative username you chose when setting up your operating system
 #. Configure signage_schedule to display a page of your choice (example.com is traditional)
-    .. tip:: The example schedule will display whatever you set "url" to all day, every day of the week. For more information on configuring the schedule, see :doc:`/variables`.
 #. Add your signage player's hostname or IP address to the "hosts" list
 #. Copy playbook.yml.example to playbook.yml 
-#. Change 
