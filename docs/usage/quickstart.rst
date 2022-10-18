@@ -50,4 +50,4 @@ Configure Ansible Inventory
     
     ansible-playbook -i hosts.yml playbook.yml
 
-Wait a few minutes. The signage player should eventually display xeyes, then chrome, dismiss the chrome first-run popup, and then display whatever you set in the schedule. Once you have that much working, go ahead to :doc:`usage/advanced-setups`
+Wait a few minutes. The signage player should eventually display xeyes, then chrome, dismiss the chrome first-run popup, and then display whatever you set in the schedule. Once you have that much working, go ahead to :doc:`advanced-setups`.
