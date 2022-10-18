@@ -1,0 +1,9 @@
+---
+
+its_sign_test:
+  vars:
+    ansible_user: administrator
+    signage_schedule:
+      - { days: "Mon,Tue,Wed,Thu,Fri,Sat,Sun", start_time: "08:00", end_time: "17:00", url: "https://example.com" }
+  hosts:
+    change-me-to-your-signage-player-address
