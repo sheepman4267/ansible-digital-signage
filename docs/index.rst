@@ -1,3 +1,9 @@
+.. toctree:: 
+    :maxdepth: 2
+
+    quickstart
+    variables
+
 =======================
 Ansible Digital Signage
 =======================

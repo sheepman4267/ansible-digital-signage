@@ -8,7 +8,7 @@ signage_schedule
 ----------------
 The Signage Schedule is defined as a list of dictionaries in YAML. Each line in the schedule is formatted as such::
 
-    - { days: "Mon,Tue,Wed,Thu,Fri", start_time: "08:00", end_time: "17:00", url: "https://example.com" }
+    - { days: "Mon,Tue,Wed,Thu,Fri,Sat,Sun", start_time: "08:00", end_time: "17:00", url: "https://example.com" }
 
 The above line will instruct the signage player to display https://example.com from 8:00 in the morning until 5:00 in the afternoon on every weekday. A few notes on this syntax:
 
