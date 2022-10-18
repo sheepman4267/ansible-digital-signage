@@ -1,3 +1,5 @@
 playbook.yml
 hosts.yml
 vars.yml
+docs/_build/*
+
