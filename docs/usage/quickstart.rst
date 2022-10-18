@@ -20,9 +20,20 @@ Prepare the signage player
 ----------------------------
 This is fairly standard Ansible setup.
 
-#. Install Ubuntu Server in minimized mode
+#. Install Ubuntu Server in minimized mode (make sure to enable the OpenSSH server!)
 #. Set your administrative user up for SSH key authentication
+    a. On your computer where you run Ansible, run :code:`ssh-keygen` to create an SSH key.
+    b. Use :code:`ssh-copy-id <your-admin-username>@<your-signage-player-address>` to automatically copy your new SSH key to the signage player.
+    c. Try signing in using :code:`ssh <your-admin-username>@<your-signage-player-address>`. If it doesn't ask for a password, you're done!
+
+    .. warning:: This is a very simple overview of the process. If you're not familiar with key-based SSH authentication, it would be a good idea to read this guide: https://linuxhandbook.com/add-ssh-public-key-to-server/
+
 #. Set your administrative user up for passwordless sudo
+    a. Create a file :code:`/etc/sudoers.d/<your-admin-username>` with these contents::
+
+        <your-admin-username> ALL=(ALL:ALL) NOPASSWD:ALL
+
+    .. tip:: Use :code:`visudo -f /etc/sudoers.d/<your-admin-username>` to create this file. This will catch your mistakes and keep you from locking yourself out of your system. You will also need to install a text editor. I'm partial to :code:`nano`, myself.
 
 ------------------------
 Install the Ansible role
