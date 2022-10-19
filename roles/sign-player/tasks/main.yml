@@ -143,7 +143,6 @@
         - { src: "files/signage-chrome.service.j2", dest: "/etc/systemd/system/signage-chrome.service" }
         - { src: "files/signage-display-off.service.j2", dest: "/etc/systemd/system/signage-display-off.service" }
         - { src: "files/signage-refresh.service.j2", dest: "/etc/systemd/system/signage-refresh.service" }
-        - { src: "files/signage-placeholder-on-boot.service.j2", dest: "/etc/systemd/system/signage-placeholder-on-boot.service" }
         - { src: "files/signage-autoreload.service.j2", dest: "/etc/systemd/system/signage-autoreload.service" }
         - { src: "files/signage-autoreload.timer.j2", dest: "/etc/systemd/system/signage-autoreload.timer" }
         - { src: "files/signage-refresh.timer.j2", dest: "/etc/systemd/system/signage-refresh.timer" }
