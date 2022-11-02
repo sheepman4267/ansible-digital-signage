@@ -6,7 +6,7 @@ ansible-digital-signage is configured entirely through variables set in your ans
 ---------------
 signage_browser
 ---------------
-String. Sets which browser will be used to display your configured pages. The role has built-in configurations for :code:`chrome`, :code:`firefox`, and :code:`chromium`. Currently defaults to :code:`chrome`.
+String. Sets which browser will be used to display your configured pages. The role has built-in configurations for :code:`chrome`, :code:`firefox`, :code:'firefox-esr', and :code:`chromium`. Currently defaults to :code:`chrome`.
 Set this to :code:`custom` to activate the next couple of variables.
 
 .. note:: The role uses :code:`MOZ_USE_XINPUT2=1` with Firefox to enable proper touchscreen support.
@@ -27,6 +27,11 @@ String. This should be the command, including full path and any arguments, but *
     signage_browser_command: "MOZ_USE_XINPUT2=1 /usr/bin/firefox -kiosk"
 
 .. note:: This will be ignored unless :ref:`signage_browser` is set to :code:`custom`.
+
+---------------------------
+signage_browser_window_name
+---------------------------
+String. This should be set to a string which will allow :code:`xdotool` to find the correct window as implemented in :ref:`signage-chrome`.
 
 -------------------
 signage_orientation
