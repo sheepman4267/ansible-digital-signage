@@ -7,4 +7,5 @@ It's also written for the author to have some idea of what he did later on.
 
 .. toctree:: 
     units
+    files
 
