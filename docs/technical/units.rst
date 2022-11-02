@@ -48,3 +48,14 @@ The timer runs the service:
 
 The service exists only to run :ref:`signage-refresh.py`, which is run as root.
 
+--------------
+signage-startx
+--------------
+
+signage-startx is a standard service, which starts the X11 display server in "rootless" mode (running as the user specified by :ref:`signage_user`). This also creates an "auto-login", although this X11 session would be fairly difficult to break out of and run arbitrary programs.
+
+signage-startx is set to enabled by the role, and starts with every boot.
+
+X11 is started using the command specified by :ref:`signage_startx_command`.
+
+By default, X11 will run :code:`~/.xinitrc` on startup. 
