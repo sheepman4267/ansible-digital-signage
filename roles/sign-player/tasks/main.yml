@@ -25,6 +25,13 @@
           signage_browser_window_name: "firefox"
           signage_browser_command: "MOZ_USE_XINPUT2=1 /usr/bin/firefox -kiosk"
 
+      - name: Set facts for Firefox ESR
+        when: signage_browser == 'firefox-esr'
+        ansible.builtin.set_fact:
+          signage_browser_package: "firefox-esr"
+          signage_browser_window_name: "firefox"
+          signage_browser_command: "MOZ_USE_XINPUT2=1 /usr/bin/firefox-esr -kiosk"
+
 - name: Debian-based distro - Ensure package requirements are met
   become: yes
   when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
@@ -139,7 +146,7 @@
         mode: 0664
       loop:
         - { src: "files/signage-startx.service.j2", dest: "/etc/systemd/system/signage-startx.service" }
-        - { src: "files/signage-xinit.j2", dest: "/home/signage/.xinitrc"}
+        - { src: "files/signage-xinitrc.j2", dest: "/home/signage/.xinitrc"}
         - { src: "files/signage-chrome.service.j2", dest: "/etc/systemd/system/signage-chrome.service" }
         - { src: "files/signage-display-off.service.j2", dest: "/etc/systemd/system/signage-display-off.service" }
         - { src: "files/signage-refresh.service.j2", dest: "/etc/systemd/system/signage-refresh.service" }
