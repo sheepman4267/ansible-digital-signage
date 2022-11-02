@@ -46,18 +46,5 @@ The timer runs the service:
 #. 60 seconds after the player boots
 #. Every time a schedule item starts or ends
 
-The service exists only to run the python script, which is run as root.
+The service exists only to run :ref:`signage-refresh.py`, which is run as root.
 
-The python script:
-
-#. Reads the schedule file populated by Ansible using :ref:`signage_schedule`
-#. When it finds a schedule entry which is active on the current day and at the current time, it:
-    a. Writes the :code:`url` parameter of that entry to :code:`/var/ansible-digital-signage/current`
-    b. Uses :code:`subprocess.call()` to restart :ref:`signage-chrome` using :code:`systemctl`
-#. If there is no entry which is determined to be currently active, the script:
-    a. Writes the path to the :ref:`signage_placeholder` file to :code:`/var/ansible-digital-signage/current`
-    b. Uses :code:`subprocess.call()` to stop :ref:`signage-chrome` using :code:`systemctl`
-    c. Uses :code:`subprocess.call()` to run :ref:`signage-display-off` using :code:`systemctl`
-
-To assist in this, the script also includes an incredibly simplistic :code:`strptime` function which only works for 24-hour time with no seconds.
-    
